@@ -4,7 +4,6 @@
 /node_modules
 /.pnp
 .pnp.js
-/studio-kiro-1/node_modules
 
 # testing
 /coverage
@@ -35,5 +34,5 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# sanity
-/studio-kiro-1/.sanity
+# sanity studio (separate project)
+/studio-kiro-1/
