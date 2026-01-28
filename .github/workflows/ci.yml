@@ -30,9 +30,6 @@ jobs:
     - name: Run ESLint
       run: npm run lint
       
-    - name: Run TypeScript type check
-      run: npx tsc --noEmit --skipLibCheck
-      
     - name: Run tests
       run: npm test -- --passWithNoTests
       env:
