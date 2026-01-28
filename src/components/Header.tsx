@@ -41,10 +41,14 @@ export default function Header({ logo, navigation, ctaButton }: HeaderProps) {
                   priority
                 />
               ) : (
-                <span className="text-xl font-bold text-gray-900">
-                  {/* CMS Integration: Company name from Sanity site settings */}
-                  Your Company
-                </span>
+                <Image
+                  src="/images/logo-placeholder.svg"
+                  alt="Your Company Logo"
+                  width={120}
+                  height={40}
+                  className="h-8 w-auto"
+                  priority
+                />
               )}
             </Link>
           </div>

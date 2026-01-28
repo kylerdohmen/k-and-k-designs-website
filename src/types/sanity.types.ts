@@ -37,7 +37,7 @@ export interface Service extends SanityDocument {
   description: string;
   icon?: string;
   image?: SanityImage;
-  slug: {
+  slug?: {
     current: string;
   };
 }

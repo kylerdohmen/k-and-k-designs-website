@@ -10,9 +10,13 @@
 
 import React from 'react';
 import { Metadata } from 'next';
+import Image from 'next/image';
 import Hero from '../../components/Hero';
 import { getAboutPageContent } from '../../lib/sanity.client';
 import { AboutPageContent, PortableTextBlock } from '../../types/sanity.types';
+
+// Enable ISR - page will be regenerated every 60 seconds
+export const revalidate = 60;
 
 // Generate metadata for SEO
 export async function generateMetadata(): Promise<Metadata> {
@@ -277,6 +281,33 @@ export default async function AboutPage() {
                 </p>
               </div>
             )}
+          </div>
+        </div>
+      </section>
+
+      {/* Team Section */}
+      <section className="py-16 lg:py-24 bg-gray-50">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-6xl mx-auto">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
+                Meet Our Team
+              </h2>
+              <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+                Our dedicated professionals bring years of experience and passion to every project.
+              </p>
+            </div>
+            
+            <div className="relative w-full max-w-4xl mx-auto">
+              <div className="relative h-96 rounded-lg overflow-hidden">
+                <Image
+                  src="/images/about-team.svg"
+                  alt="Our professional team"
+                  fill
+                  className="object-cover"
+                />
+              </div>
+            </div>
           </div>
         </div>
       </section>

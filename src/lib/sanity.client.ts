@@ -22,9 +22,9 @@ import {
 
 // Sanity client configuration
 export const client = createClient({
-  projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || 'your-project-id',
+  projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || 'l8zvozfy',
   dataset: process.env.NEXT_PUBLIC_SANITY_DATASET || 'production',
-  useCdn: true, // Set to false if you need fresh data
+  useCdn: true, // Use CDN for better performance in production
   apiVersion: process.env.NEXT_PUBLIC_SANITY_API_VERSION || '2023-05-03',
   ...(process.env.SANITY_API_TOKEN && { token: process.env.SANITY_API_TOKEN }),
 });
@@ -192,6 +192,10 @@ export async function getHomePageContent(): Promise<HomePageContent> {
     return fallbackContent.homePage();
   }
 
+  console.log('Fetching home page content from Sanity...');
+  console.log('Project ID:', process.env.NEXT_PUBLIC_SANITY_PROJECT_ID);
+  console.log('Dataset:', process.env.NEXT_PUBLIC_SANITY_DATASET);
+
   try {
     const query = `*[_type == "homePage"][0]{
       _id,
@@ -244,6 +248,7 @@ export async function getHomePageContent(): Promise<HomePageContent> {
       return fallbackContent.homePage();
     }
 
+    console.log('Successfully fetched home page content:', content._id);
     return content;
   } catch (error) {
     console.error('Error fetching home page content:', error);
@@ -394,8 +399,75 @@ export async function getAllServices(): Promise<Service[]> {
 }
 
 /**
- * Fetch site settings from Sanity CMS
+ * Fetch contact page content from Sanity CMS
  */
+export async function getContactPageContent(): Promise<any> {
+  if (!process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || process.env.NEXT_PUBLIC_SANITY_PROJECT_ID === 'your-project-id') {
+    console.log('Sanity not configured, using fallback content for contact page');
+    return null;
+  }
+
+  console.log('Fetching contact page content from Sanity...');
+
+  try {
+    const query = `*[_type == "contactPage"][0]{
+      _id,
+      _type,
+      _createdAt,
+      _updatedAt,
+      _rev,
+      hero{
+        title,
+        subtitle
+      },
+      contactInfo{
+        address{
+          street,
+          city,
+          state,
+          zipCode,
+          country
+        },
+        phone,
+        email,
+        businessHours[]{
+          days,
+          hours
+        }
+      },
+      formSettings{
+        title,
+        subjects[]{
+          label,
+          value
+        },
+        responseMessage{
+          title,
+          message
+        }
+      },
+      seo{
+        title,
+        description,
+        keywords,
+        noIndex
+      }
+    }`;
+
+    const content = await client.fetch(query);
+    
+    if (!content) {
+      console.log('No contact page content found in CMS, using fallback');
+      return null;
+    }
+
+    console.log('Successfully fetched contact page content:', content._id);
+    return content;
+  } catch (error) {
+    console.error('Error fetching contact page content:', error);
+    return null;
+  }
+}
 export async function getSiteSettings(): Promise<SiteSettings | null> {
   if (!process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || process.env.NEXT_PUBLIC_SANITY_PROJECT_ID === 'your-project-id') {
     console.log('Sanity not configured, no site settings available');

@@ -34,5 +34,12 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# sanity studio (separate project)
+# sanity studios (separate projects)
 /studio-kiro-1/
+/k-and-k-studio/
+/k-and-k-studio-deploy/
+/sanity-studio/
+/studio-deploy/
+
+# sanity build files
+/dist/

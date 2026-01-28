@@ -15,6 +15,9 @@ import ServicesSection from '../../components/ServicesSection';
 import { getServicesPageContent, getAllServices } from '../../lib/sanity.client';
 import { ServicesPageContent } from '../../types/sanity.types';
 
+// Enable ISR - page will be regenerated every 60 seconds
+export const revalidate = 60;
+
 // Generate metadata for SEO
 export async function generateMetadata(): Promise<Metadata> {
   try {

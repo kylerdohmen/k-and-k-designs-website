@@ -33,7 +33,10 @@ const Hero: React.FC<HeroProps> = ({
 
   // Handle background image (string or SanityImage)
   const getBackgroundImageUrl = () => {
-    if (!backgroundImage) return null;
+    if (!backgroundImage) {
+      // Use fallback background image
+      return '/images/hero-bg.svg';
+    }
     
     if (typeof backgroundImage === 'string') {
       return backgroundImage;
@@ -51,34 +54,24 @@ const Hero: React.FC<HeroProps> = ({
       className={`
         relative w-full flex items-center justify-center
         ${variantClasses[variant]}
-        ${backgroundImageUrl ? 'bg-cover bg-center bg-no-repeat' : 'bg-gray-50'}
+        bg-cover bg-center bg-no-repeat
       `}
-      style={backgroundImageUrl ? { backgroundImage: `url(${backgroundImageUrl})` } : undefined}
+      style={{ backgroundImage: `url(${backgroundImageUrl})` }}
     >
-      {/* Overlay for better text readability when background image is present */}
-      {backgroundImageUrl && (
-        <div className="absolute inset-0 bg-black bg-opacity-40" />
-      )}
+      {/* Overlay for better text readability */}
+      <div className="absolute inset-0 bg-black bg-opacity-40" />
       
       {/* Content container */}
       <div className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8">
         <div className={`flex flex-col ${alignmentClasses[alignment]} max-w-4xl mx-auto`}>
           {/* Title */}
-          <h1 className={`
-            text-4xl sm:text-5xl lg:text-6xl font-bold mb-6
-            ${backgroundImageUrl ? 'text-white' : 'text-gray-900'}
-            leading-tight
-          `}>
+          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 text-white leading-tight">
             {title}
           </h1>
           
           {/* Subtitle */}
           {subtitle && (
-            <p className={`
-              text-lg sm:text-xl lg:text-2xl mb-8 max-w-2xl
-              ${backgroundImageUrl ? 'text-gray-100' : 'text-gray-600'}
-              leading-relaxed
-            `}>
+            <p className="text-lg sm:text-xl lg:text-2xl mb-8 max-w-2xl text-gray-100 leading-relaxed">
               {subtitle}
             </p>
           )}
@@ -90,7 +83,7 @@ const Hero: React.FC<HeroProps> = ({
                 const buttonVariantClasses = {
                   primary: 'bg-blue-600 hover:bg-blue-700 text-white border-blue-600',
                   secondary: 'bg-white hover:bg-gray-50 text-gray-900 border-gray-300',
-                  outline: `border-2 ${backgroundImageUrl ? 'border-white text-white hover:bg-white hover:text-gray-900' : 'border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white'}`
+                  outline: 'border-2 border-white text-white hover:bg-white hover:text-gray-900'
                 };
                 
                 const baseClasses = 'px-8 py-3 rounded-lg font-semibold text-base transition-all duration-200 border-2 inline-flex items-center justify-center';

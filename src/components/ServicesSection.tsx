@@ -25,15 +25,33 @@ const ServicesSection: React.FC<ServicesSectionProps> = ({
   };
 
   // Handle service image (string or SanityImage)
-  const getServiceImageUrl = (image: string | any) => {
-    if (!image) return null;
+  const getServiceImageUrl = (image: string | any, index: number = 0): string => {
+    if (!image) {
+      // Use fallback service images
+      const fallbackImages = [
+        '/images/service-1.svg',
+        '/images/service-2.svg',
+        '/images/service-3.svg'
+      ];
+      return fallbackImages[index % fallbackImages.length] || '/images/service-1.svg';
+    }
     
     if (typeof image === 'string') {
       return image;
     }
     
     // Handle SanityImage type - in a real implementation, you'd use Sanity's image URL builder
-    return `https://cdn.sanity.io/images/project-id/dataset/${image.asset._ref.replace('image-', '').replace('-jpg', '.jpg').replace('-png', '.png')}`;
+    if (image.asset && image.asset._ref) {
+      return `https://cdn.sanity.io/images/project-id/dataset/${image.asset._ref.replace('image-', '').replace('-jpg', '.jpg').replace('-png', '.png')}`;
+    }
+    
+    // Fallback if SanityImage is malformed
+    const fallbackImages = [
+      '/images/service-1.svg',
+      '/images/service-2.svg',
+      '/images/service-3.svg'
+    ];
+    return fallbackImages[index % fallbackImages.length] || '/images/service-1.svg';
   };
 
   return (
@@ -55,30 +73,37 @@ const ServicesSection: React.FC<ServicesSectionProps> = ({
         {layout === 'grid' ? (
           // Grid Layout
           <div className={`grid ${gridClasses[columns]} gap-8 lg:gap-12`}>
-            {services.map((service) => (
+            {services.map((service, index) => (
               <div 
                 key={service._id} 
                 className="bg-white rounded-lg border border-gray-200 p-6 lg:p-8 hover:shadow-lg transition-shadow duration-300"
               >
                 {/* Service Icon/Image */}
-                {(service.icon || service.image) && (
-                  <div className="mb-6">
-                    {service.image ? (
-                      <div className="relative w-full h-48 rounded-lg overflow-hidden">
-                        <Image
-                          src={getServiceImageUrl(service.image) || '/placeholder-service.jpg'}
-                          alt={service.image.alt || service.title}
-                          fill
-                          className="object-cover"
-                        />
-                      </div>
-                    ) : service.icon ? (
-                      <div className="w-16 h-16 bg-blue-100 rounded-lg flex items-center justify-center">
-                        <span className="text-2xl">{service.icon}</span>
-                      </div>
-                    ) : null}
-                  </div>
-                )}
+                <div className="mb-6">
+                  {service.image ? (
+                    <div className="relative w-full h-48 rounded-lg overflow-hidden">
+                      <Image
+                        src={getServiceImageUrl(service.image, index)}
+                        alt={service.image?.alt || service.title}
+                        fill
+                        className="object-cover"
+                      />
+                    </div>
+                  ) : service.icon ? (
+                    <div className="w-16 h-16 bg-blue-100 rounded-lg flex items-center justify-center">
+                      <span className="text-2xl">{service.icon}</span>
+                    </div>
+                  ) : (
+                    <div className="relative w-full h-48 rounded-lg overflow-hidden">
+                      <Image
+                        src={getServiceImageUrl(null, index)}
+                        alt={service.title}
+                        fill
+                        className="object-cover"
+                      />
+                    </div>
+                  )}
+                </div>
                 
                 {/* Service Title */}
                 <h3 className="text-xl lg:text-2xl font-semibold text-gray-900 mb-4">
@@ -103,24 +128,31 @@ const ServicesSection: React.FC<ServicesSectionProps> = ({
                 }`}
               >
                 {/* Service Icon/Image */}
-                {(service.icon || service.image) && (
-                  <div className="flex-shrink-0 w-full lg:w-1/3">
-                    {service.image ? (
-                      <div className="relative w-full h-64 lg:h-48 rounded-lg overflow-hidden">
-                        <Image
-                          src={getServiceImageUrl(service.image) || '/placeholder-service.jpg'}
-                          alt={service.image.alt || service.title}
-                          fill
-                          className="object-cover"
-                        />
-                      </div>
-                    ) : service.icon ? (
-                      <div className="w-20 h-20 bg-blue-100 rounded-lg flex items-center justify-center mx-auto lg:mx-0">
-                        <span className="text-3xl">{service.icon}</span>
-                      </div>
-                    ) : null}
-                  </div>
-                )}
+                <div className="flex-shrink-0 w-full lg:w-1/3">
+                  {service.image ? (
+                    <div className="relative w-full h-64 lg:h-48 rounded-lg overflow-hidden">
+                      <Image
+                        src={getServiceImageUrl(service.image, index)}
+                        alt={service.image?.alt || service.title}
+                        fill
+                        className="object-cover"
+                      />
+                    </div>
+                  ) : service.icon ? (
+                    <div className="w-20 h-20 bg-blue-100 rounded-lg flex items-center justify-center mx-auto lg:mx-0">
+                      <span className="text-3xl">{service.icon}</span>
+                    </div>
+                  ) : (
+                    <div className="relative w-full h-64 lg:h-48 rounded-lg overflow-hidden">
+                      <Image
+                        src={getServiceImageUrl(null, index)}
+                        alt={service.title}
+                        fill
+                        className="object-cover"
+                      />
+                    </div>
+                  )}
+                </div>
                 
                 {/* Service Content */}
                 <div className="flex-1">
