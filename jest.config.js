@@ -17,6 +17,9 @@ const customJestConfig = {
     'src/**/*.{js,jsx,ts,tsx}',
     '!src/**/*.d.ts',
   ],
+  transformIgnorePatterns: [
+    'node_modules/(?!(nanoid|@sanity|next-sanity)/)',
+  ],
 }
 
 // createJestConfig is exported this way to ensure that next/jest can load the Next.js config which is async

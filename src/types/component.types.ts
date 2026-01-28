@@ -146,3 +146,15 @@ export interface ContactFormProps {
   submitText?: string;
   onSubmit?: (data: Record<string, string>) => void;
 }
+
+// Re-export carousel types for convenience
+export type {
+  ScrollLockedCarouselProps,
+  CarouselSectionProps,
+  BackgroundImageProps,
+  ContentOverlayProps,
+  ProgressIndicatorProps,
+  CarouselSection,
+  CarouselData,
+  ScrollProgress,
+} from './carousel.types';

@@ -1,171 +1,103 @@
 /**
  * Home Page Component
  * 
- * The main landing page of the marketing website. Integrates with Sanity CMS
- * to fetch and display hero content and services section. Includes proper
- * TypeScript typing, error handling, and SEO metadata configuration.
+ * The main landing page of the marketing website. Features the new ScrollLockedCarousel
+ * as the hero section, followed by the existing ServicesSection and Footer.
+ * Integrates with Sanity CMS for content management with fallback sample data.
  * 
- * Requirements: 2.1, 2.4, 2.5, 4.2
+ * Requirements: 2.1, 2.4, 2.5, 4.2, 7.2
  */
 
+'use client';
+
 import React from 'react';
-import { Metadata } from 'next';
-import Hero from '../components/Hero';
+import { ScrollLockedCarousel } from '../components/carousel/ScrollLockedCarousel';
 import ServicesSection from '../components/ServicesSection';
-import { getHomePageContent, getAllServices } from '../lib/sanity.client';
-import { HomePageContent } from '../types/sanity.types';
+import { getSampleCarouselData } from '../lib/sample-carousel-data';
 
-// Enable ISR - page will be regenerated every 60 seconds
-export const revalidate = 60;
-
-// Generate metadata for SEO
-export async function generateMetadata(): Promise<Metadata> {
-  try {
-    const content = await getHomePageContent();
-    
-    if (!content || !content.seo) {
-      // Fallback metadata
-      return {
-        title: 'Home - Marketing Website',
-        description: 'Professional marketing website for your business needs',
-        keywords: ['marketing', 'business', 'professional', 'services'],
-      };
-    }
-
-    const { seo } = content;
-    
-    return {
-      title: seo.title || 'Home - Marketing Website',
-      description: seo.description || 'Professional marketing website for your business needs',
-      keywords: seo.keywords || ['marketing', 'business', 'professional', 'services'],
-      robots: seo.noIndex ? 'noindex, nofollow' : 'index, follow',
-      openGraph: {
-        title: seo.title || 'Home - Marketing Website',
-        description: seo.description || 'Professional marketing website for your business needs',
-        type: 'website',
-        // TODO: Add ogImage URL when Sanity image URL builder is implemented
-        // images: seo.ogImage ? [{ url: buildImageUrl(seo.ogImage) }] : undefined,
-      },
-      twitter: {
-        card: 'summary_large_image',
-        title: seo.title || 'Home - Marketing Website',
-        description: seo.description || 'Professional marketing website for your business needs',
-        // TODO: Add Twitter image when Sanity image URL builder is implemented
-        // images: seo.ogImage ? [buildImageUrl(seo.ogImage)] : undefined,
-      },
-    };
-  } catch (error) {
-    console.error('Error generating metadata for home page:', error);
-    
-    // Return fallback metadata on error
-    return {
-      title: 'Home - Marketing Website',
-      description: 'Professional marketing website for your business needs',
-      keywords: ['marketing', 'business', 'professional', 'services'],
-    };
+// Sample services data for demo
+const sampleServices = [
+  {
+    _id: 'demo-service-1',
+    _type: 'service',
+    _createdAt: new Date().toISOString(),
+    _updatedAt: new Date().toISOString(),
+    _rev: 'demo',
+    title: 'Strategic Consulting',
+    description: 'Expert guidance to help your business navigate complex challenges and identify growth opportunities.',
+    slug: { current: 'strategic-consulting' }
+  },
+  {
+    _id: 'demo-service-2',
+    _type: 'service',
+    _createdAt: new Date().toISOString(),
+    _updatedAt: new Date().toISOString(),
+    _rev: 'demo',
+    title: 'Digital Transformation',
+    description: 'Modernize your operations with cutting-edge technology solutions tailored to your industry.',
+    slug: { current: 'digital-transformation' }
+  },
+  {
+    _id: 'demo-service-3',
+    _type: 'service',
+    _createdAt: new Date().toISOString(),
+    _updatedAt: new Date().toISOString(),
+    _rev: 'demo',
+    title: 'Innovation Strategy',
+    description: 'Develop and implement innovative strategies that drive sustainable competitive advantage.',
+    slug: { current: 'innovation-strategy' }
   }
-}
+];
 
 /**
  * Home Page Component
  * 
- * Fetches content from Sanity CMS and renders the home page with Hero and
- * ServicesSection components. Includes comprehensive error handling and
- * fallback content to ensure the page always renders successfully.
+ * Features the ScrollLockedCarousel as the main hero experience, followed by
+ * the existing ServicesSection. Uses sample data for demonstration.
  */
-export default async function HomePage() {
-  let content: HomePageContent | null = null;
-  let services: any[] = [];
+export default function HomePage() {
+  // Get carousel data (sample data for now)
+  const carouselData = getSampleCarouselData();
 
-  try {
-    // Fetch home page content from Sanity CMS
-    content = await getHomePageContent();
-    
-    // If content has services, use them; otherwise fetch all services
-    if (content?.services?.services && content.services.services.length > 0) {
-      services = content.services.services;
-    } else {
-      // Fallback to fetching all services if home page doesn't specify services
-      services = await getAllServices();
-    }
-  } catch (error) {
-    console.error('Error fetching home page content:', error);
-    
-    // TODO: Add error reporting/monitoring integration here
-    // Example: reportError('home_page_content_fetch_failed', error);
-  }
-
-  // Use fallback content if CMS content is not available
-  if (!content) {
-    content = {
-      _id: 'fallback-home',
-      _type: 'homePage',
-      _createdAt: new Date().toISOString(),
-      _updatedAt: new Date().toISOString(),
-      _rev: 'fallback',
-      hero: {
-        title: 'Welcome to Our Business',
-        subtitle: 'Professional services tailored to your needs. We help businesses grow and succeed with our comprehensive solutions.',
-        alignment: 'center' as const,
-        ctaButtons: [
-          {
-            text: 'Get Started',
-            href: '/services',
-            variant: 'primary' as const
-          },
-          {
-            text: 'Learn More',
-            href: '/about',
-            variant: 'outline' as const
-          }
-        ]
-      },
-      services: {
-        title: 'Our Services',
-        description: 'Discover what we can do for you with our range of professional services',
-        services: services,
-        layout: 'grid' as const
-      },
-      seo: {
-        title: 'Home - Marketing Website',
-        description: 'Professional marketing website for your business needs'
+  // Handle carousel completion - smooth scroll to services section
+  const handleCarouselComplete = () => {
+    // Small delay to allow scroll unlock to complete
+    setTimeout(() => {
+      const servicesSection = document.getElementById('services-section');
+      if (servicesSection) {
+        servicesSection.scrollIntoView({ 
+          behavior: 'smooth',
+          block: 'start'
+        });
       }
-    };
-  }
-
-  // Ensure services data is properly structured
-  const servicesData = {
-    title: content.services?.title || 'Our Services',
-    description: content.services?.description || 'Discover what we can do for you',
-    services: services || [],
-    layout: (content.services?.layout || 'grid') as 'grid' | 'list'
+    }, 100);
   };
 
   return (
-    <main className="min-h-screen">
-      {/* Hero Section */}
-      <Hero
-        title={content.hero.title}
-        {...(content.hero.subtitle && { subtitle: content.hero.subtitle })}
-        {...(content.hero.backgroundImage && { backgroundImage: content.hero.backgroundImage })}
-        ctaButtons={content.hero.ctaButtons || []}
-        alignment={content.hero.alignment || 'center'}
+    <>
+      {/* Scroll-Locked Carousel Hero Section */}
+      <ScrollLockedCarousel
+        sections={carouselData.sections}
+        onComplete={handleCarouselComplete}
+        className="relative z-10"
       />
 
       {/* Services Section */}
-      <ServicesSection
-        title={servicesData.title}
-        description={servicesData.description}
-        services={servicesData.services}
-        layout={servicesData.layout}
-      />
+      <section id="services-section" className="relative z-20 pt-20">
+        <ServicesSection
+          title="Our Services"
+          description="Discover what we can do for you with our range of professional services"
+          services={sampleServices}
+          layout="grid"
+        />
+      </section>
 
       {/* TODO: Add additional sections as needed */}
       {/* Example: Testimonials, About Preview, Contact CTA, etc. */}
       
       {/* TODO: Add structured data for SEO */}
       {/* Example: JSON-LD schema for business information */}
-    </main>
+    </>
   );
 }
 

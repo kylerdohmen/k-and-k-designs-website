@@ -46,23 +46,25 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <div className="min-h-screen flex flex-col">
-          {/* Header with default navigation and CTA */}
-          <Header
-            navigation={defaultNavigation}
-            ctaButton={{
-              text: 'Get Started',
-              href: '/contact',
-              variant: 'primary'
-            }}
-          />
+        <div className="min-h-screen">
+          {/* Header with fixed positioning to overlay the carousel */}
+          <div className="fixed top-0 left-0 right-0 z-50">
+            <Header
+              navigation={defaultNavigation}
+              ctaButton={{
+                text: 'Get Started',
+                href: '/contact',
+                variant: 'primary'
+              }}
+            />
+          </div>
           
           {/* Main content area */}
-          <main className="flex-grow">
+          <main>
             {children}
           </main>
           
-          {/* Footer with company information and social links */}
+          {/* Footer */}
           <Footer
             companyInfo={defaultCompanyInfo}
             socialLinks={defaultSocialLinks}

@@ -13,6 +13,7 @@ export interface SanityImage {
     _ref: string;
     _type: 'reference';
   };
+  _type?: 'image';
   alt?: string;
 }
 

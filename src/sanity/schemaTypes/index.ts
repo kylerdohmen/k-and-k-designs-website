@@ -10,6 +10,8 @@ import {servicesPage} from './servicesPage'
 import {contactPage} from './contactPage'
 import {service} from './service'
 import {siteSettings} from './siteSettings'
+import {carouselSection} from './carouselSection'
+import {carouselConfig} from './carouselConfig'
 
 export const schema: { types: SchemaTypeDefinition[] } = {
   types: [
@@ -20,6 +22,9 @@ export const schema: { types: SchemaTypeDefinition[] } = {
     servicesPage,
     contactPage,
     service,
+    // Carousel content
+    carouselConfig,
+    carouselSection,
     // Blog content (optional)
     blockContentType,
     categoryType,
